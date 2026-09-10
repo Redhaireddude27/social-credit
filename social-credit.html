@@ -1,0 +1,1122 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>IS Social Credit | 信息系统社会信用</title>
+
+    <!-- Chart.js for the social credit graph -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f6f8;
+            color: #222;
+        }
+
+        /* HEADER */
+        header {
+            background: #111827;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.4rem;
+        }
+
+        header h2 {
+            margin: 8px 0 0;
+            font-size: 1.4rem;
+            font-weight: normal;
+            color: #d1d5db;
+        }
+
+        header p {
+            margin: 15px auto 0;
+            max-width: 700px;
+            color: #9ca3af;
+        }
+
+        /* MAIN */
+        main {
+            width: 90%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        .section-title {
+            margin-bottom: 15px;
+        }
+
+        .section-title h2 {
+            margin-bottom: 5px;
+        }
+
+        .section-title p {
+            color: #666;
+            margin-top: 0;
+        }
+
+        /* STUDENT GRID */
+        .student-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .student-card {
+            background: white;
+            border-radius: 10px;
+            padding: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.15s ease;
+        }
+
+        .student-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .student-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .score {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .score.positive {
+            color: #15803d;
+        }
+
+        .score.negative {
+            color: #dc2626;
+        }
+
+        .score.zero {
+            color: #555;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        button {
+            border: none;
+            border-radius: 6px;
+            padding: 9px 14px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: opacity 0.15s;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        .add-button {
+            background: #16a34a;
+            color: white;
+            flex: 1;
+        }
+
+        .subtract-button {
+            background: #dc2626;
+            color: white;
+            flex: 1;
+        }
+
+        /* GRAPH */
+        .graph-section {
+            background: white;
+            margin-top: 35px;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .graph-container {
+            position: relative;
+            height: 500px;
+        }
+
+        /* HISTORY */
+        .history-section {
+            background: white;
+            margin-top: 35px;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .history-item {
+            border-bottom: 1px solid #eee;
+            padding: 12px 0;
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-change {
+            font-weight: bold;
+        }
+
+        .history-change.add {
+            color: #15803d;
+        }
+
+        .history-change.subtract {
+            color: #dc2626;
+        }
+
+        .history-reason {
+            color: #555;
+            flex: 1;
+        }
+
+        .history-student {
+            font-weight: bold;
+            min-width: 120px;
+        }
+
+        .clear-button {
+            background: #374151;
+            color: white;
+            margin-top: 15px;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.55);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 450px;
+            border-radius: 12px;
+            padding: 25px;
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+        }
+
+        .modal-content label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        .modal-content select,
+        .modal-content input {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .submit-button {
+            background: #2563eb;
+            color: white;
+            flex: 1;
+        }
+
+        .cancel-button {
+            background: #d1d5db;
+            color: #111;
+            flex: 1;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .graph-container {
+                height: 350px;
+            }
+
+            .history-item {
+                flex-direction: column;
+                gap: 4px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>IS Social Credit</h1>
+    <h2>信息系统社会信用</h2>
+    <p>
+        Track the social credit of your IS classmates.
+        Everyone starts with 0 social credit.
+    </p>
+</header>
+
+<main>
+
+    <!-- STUDENTS -->
+    <section>
+        <div class="section-title">
+            <h2>Classmates</h2>
+            <p>Select a student to add or subtract social credit.</p>
+        </div>
+
+        <div id="studentGrid" class="student-grid"></div>
+    </section>
+
+
+    <!-- GRAPH -->
+    <section class="graph-section">
+        <div class="section-title">
+            <h2>Social Credit Over Time</h2>
+            <p>
+                Track how everyone's social credit changes throughout the semester.
+            </p>
+        </div>
+
+        <div class="graph-container">
+            <canvas id="creditChart"></canvas>
+        </div>
+    </section>
+
+
+    <!-- HISTORY -->
+    <section class="history-section">
+        <div class="section-title">
+            <h2>Recent Activity</h2>
+            <p>Every social-credit adjustment is recorded here.</p>
+        </div>
+
+        <div id="historyList">
+            <p>No social-credit activity yet.</p>
+        </div>
+
+        <button class="clear-button" onclick="clearAllData()">
+            Reset All Social Credit
+        </button>
+    </section>
+
+</main>
+
+
+<!-- MODAL -->
+<div id="creditModal" class="modal">
+
+    <div class="modal-content">
+
+        <h2 id="modalTitle">Change Social Credit</h2>
+
+        <label for="changeType">Change</label>
+
+        <select id="changeType">
+            <option value="add">Add Social Credit</option>
+            <option value="subtract">Subtract Social Credit</option>
+        </select>
+
+
+        <label for="pointAmount">Points</label>
+
+        <input
+            type="number"
+            id="pointAmount"
+            min="1"
+            value="20"
+        >
+
+
+        <label for="reason">Reason</label>
+
+        <select id="reason">
+
+            <option value="Made people laugh">
+                Made people laugh
+            </option>
+
+            <option value="Made a great comment">
+                Made a great comment
+            </option>
+
+            <option value="Helped a classmate">
+                Helped a classmate
+            </option>
+
+            <option value="Answered a difficult question">
+                Answered a difficult question
+            </option>
+
+            <option value="Made a cringe comment">
+                Made a cringe comment
+            </option>
+
+            <option value="Fell asleep in class">
+                Fell asleep in class
+            </option>
+
+            <option value="Was on their phone">
+               Was on their phone
+            </option>
+
+            <option value="Was late to class">
+                Was late to class
+            </option>
+
+            <option value="Custom">
+                Custom reason
+            </option>
+
+        </select>
+
+
+        <input
+            type="text"
+            id="customReason"
+            placeholder="Enter custom reason"
+            style="display:none; margin-top:10px;"
+        >
+
+
+        <div class="modal-buttons">
+
+            <button
+                class="cancel-button"
+                onclick="closeModal()"
+            >
+                Cancel
+            </button>
+
+            <button
+                class="submit-button"
+                onclick="submitCreditChange()"
+            >
+                Apply Change
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /*
+     * ============================================
+     * STUDENT DATA
+     * ============================================
+     */
+
+    const students = [
+        "Student 01",
+        "Student 02",
+        "Student 03",
+        "Student 04",
+        "Student 05",
+        "Student 06",
+        "Student 07",
+        "Student 08",
+        "Student 09",
+        "Student 10",
+        "Student 11",
+        "Student 12",
+        "Student 13",
+        "Student 14",
+        "Student 15",
+        "Student 16",
+        "Student 17",
+        "Student 18",
+        "Student 19",
+        "Student 20",
+        "Student 21",
+        "Student 22",
+        "Student 23",
+        "Student 24",
+        "Student 25",
+        "Student 26"
+    ];
+
+
+    /*
+     * ============================================
+     * LOAD DATA
+     * ============================================
+     */
+
+    let data = JSON.parse(
+        localStorage.getItem("socialCreditData")
+    );
+
+
+    // If no saved data exists, create it
+    if (!data) {
+
+        data = {
+
+            scores: {},
+
+            history: []
+
+        };
+
+        students.forEach(student => {
+            data.scores[student] = 0;
+        });
+
+        saveData();
+    }
+
+
+    /*
+     * ============================================
+     * SAVE DATA
+     * ============================================
+     */
+
+    function saveData() {
+
+        localStorage.setItem(
+            "socialCreditData",
+            JSON.stringify(data)
+        );
+
+    }
+
+
+    /*
+     * ============================================
+     * DISPLAY STUDENTS
+     * ============================================
+     */
+
+    function renderStudents() {
+
+        const grid =
+            document.getElementById("studentGrid");
+
+        grid.innerHTML = "";
+
+
+        students.forEach(student => {
+
+            const score = data.scores[student];
+
+            let scoreClass = "zero";
+
+            if (score > 0) {
+                scoreClass = "positive";
+            }
+
+            if (score < 0) {
+                scoreClass = "negative";
+            }
+
+
+            const card =
+                document.createElement("div");
+
+            card.className = "student-card";
+
+
+            card.innerHTML = `
+
+                <div class="student-name">
+                    ${student}
+                </div>
+
+                <div class="score ${scoreClass}">
+                    ${score}
+                </div>
+
+                <div class="button-row">
+
+                    <button
+                        class="add-button"
+                        onclick="openModal('${student}', 'add')"
+                    >
+                        + Add
+                    </button>
+
+                    <button
+                        class="subtract-button"
+                        onclick="openModal('${student}', 'subtract')"
+                    >
+                        − Subtract
+                    </button>
+
+                </div>
+
+            `;
+
+
+            grid.appendChild(card);
+
+        });
+
+    }
+
+
+    /*
+     * ============================================
+     * MODAL
+     * ============================================
+     */
+
+    let selectedStudent = null;
+
+
+    function openModal(student, type) {
+
+        selectedStudent = student;
+
+        document.getElementById("changeType").value = type;
+
+        document.getElementById("modalTitle").textContent =
+            "Change " + student + "'s Social Credit";
+
+        document.getElementById("pointAmount").value = 20;
+
+        document.getElementById("reason").value =
+            "Made people laugh";
+
+        document.getElementById("customReason").style.display =
+            "none";
+
+        document.getElementById("creditModal").style.display =
+            "flex";
+
+    }
+
+
+    function closeModal() {
+
+        document.getElementById("creditModal").style.display =
+            "none";
+
+        selectedStudent = null;
+
+    }
+
+
+    /*
+     * ============================================
+     * CUSTOM REASON
+     * ============================================
+     */
+
+    document.getElementById("reason").addEventListener(
+        "change",
+        function() {
+
+            const custom =
+                document.getElementById("customReason");
+
+            if (this.value === "Custom") {
+
+                custom.style.display = "block";
+
+            } else {
+
+                custom.style.display = "none";
+
+            }
+
+        }
+    );
+
+
+    /*
+     * ============================================
+     * APPLY CHANGE
+     * ============================================
+     */
+
+    function submitCreditChange() {
+
+        if (!selectedStudent) {
+            return;
+        }
+
+
+        const type =
+            document.getElementById("changeType").value;
+
+
+        const points =
+            parseInt(
+                document.getElementById("pointAmount").value
+            );
+
+
+        if (!points || points <= 0) {
+
+            alert("Please enter a positive number of points.");
+
+            return;
+
+        }
+
+
+        let reason =
+            document.getElementById("reason").value;
+
+
+        if (reason === "Custom") {
+
+            reason =
+                document.getElementById("customReason").value.trim();
+
+
+            if (!reason) {
+
+                alert("Please enter a reason.");
+
+                return;
+
+            }
+
+        }
+
+
+        let change = points;
+
+
+        if (type === "subtract") {
+
+            change = -points;
+
+        }
+
+
+        // Update student's score
+        data.scores[selectedStudent] += change;
+
+
+        // Record transaction
+        data.history.push({
+
+            student: selectedStudent,
+
+            change: change,
+
+            reason: reason,
+
+            time: new Date().toLocaleString()
+
+        });
+
+
+        saveData();
+
+        renderStudents();
+
+        renderHistory();
+
+        updateChart();
+
+        closeModal();
+
+    }
+
+
+    /*
+     * ============================================
+     * HISTORY
+     * ============================================
+     */
+
+    function renderHistory() {
+
+        const historyList =
+            document.getElementById("historyList");
+
+
+        if (data.history.length === 0) {
+
+            historyList.innerHTML =
+                "<p>No social-credit activity yet.</p>";
+
+            return;
+
+        }
+
+
+        historyList.innerHTML = "";
+
+
+        // Show newest activity first
+        const history =
+            [...data.history].reverse();
+
+
+        history.forEach(item => {
+
+            const div =
+                document.createElement("div");
+
+            div.className = "history-item";
+
+
+            const changeClass =
+                item.change >= 0
+                    ? "add"
+                    : "subtract";
+
+
+            const sign =
+                item.change >= 0
+                    ? "+"
+                    : "";
+
+
+            div.innerHTML = `
+
+                <div class="history-student">
+                    ${item.student}
+                </div>
+
+                <div class="history-reason">
+                    ${item.reason}
+                    <br>
+                    <small>${item.time}</small>
+                </div>
+
+                <div class="history-change ${changeClass}">
+                    ${sign}${item.change}
+                </div>
+
+            `;
+
+
+            historyList.appendChild(div);
+
+        });
+
+    }
+
+
+    /*
+     * ============================================
+     * CHART
+     * ============================================
+     */
+
+    let creditChart;
+
+
+    function createChart() {
+
+        const ctx =
+            document.getElementById("creditChart")
+                .getContext("2d");
+
+
+        const datasets =
+            students.map((student, index) => {
+
+                return {
+
+                    label: student,
+
+                    data: getStudentHistory(student),
+
+                    borderWidth: 2,
+
+                    tension: 0.2,
+
+                    pointRadius: 2,
+
+                    fill: false
+
+                };
+
+            });
+
+
+        creditChart = new Chart(ctx, {
+
+            type: "line",
+
+            data: {
+
+                labels: getChartLabels(),
+
+                datasets: datasets
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                interaction: {
+
+                    mode: "index",
+
+                    intersect: false
+
+                },
+
+                plugins: {
+
+                    legend: {
+
+                        position: "bottom"
+
+                    },
+
+                    tooltip: {
+
+                        mode: "index",
+
+                        intersect: false
+
+                    }
+
+                },
+
+                scales: {
+
+                    y: {
+
+                        title: {
+
+                            display: true,
+
+                            text: "Social Credit"
+
+                        }
+
+                    },
+
+                    x: {
+
+                        title: {
+
+                            display: true,
+
+                            text: "Activity"
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+
+    /*
+     * Get labels for chart
+     */
+
+    function getChartLabels() {
+
+        const labels = ["Start"];
+
+        for (let i = 1; i <= data.history.length; i++) {
+            labels.push("Change " + i);
+        }
+
+        return labels;
+
+    }
+
+
+    /*
+     * Get student's score after every change
+     */
+
+    function getStudentHistory(student) {
+
+        let score = 0;
+
+        const values = [0];
+
+
+        data.history.forEach(item => {
+
+            if (item.student === student) {
+
+                score += item.change;
+
+            }
+
+            values.push(score);
+
+        });
+
+
+        return values;
+
+    }
+
+
+    /*
+     * Update chart after every transaction
+     */
+
+    function updateChart() {
+
+        if (!creditChart) {
+            return;
+        }
+
+
+        creditChart.data.labels =
+            getChartLabels();
+
+
+        creditChart.data.datasets =
+            students.map(student => ({
+
+                label: student,
+
+                data: getStudentHistory(student),
+
+                borderWidth: 2,
+
+                tension: 0.2,
+
+                pointRadius: 2,
+
+                fill: false
+
+            }));
+
+
+        creditChart.update();
+
+    }
+
+
+    /*
+     * ============================================
+     * RESET EVERYTHING
+     * ============================================
+     */
+
+    function clearAllData() {
+
+        const confirmation =
+            confirm(
+                "Are you sure you want to reset everyone's social credit and delete all history?"
+            );
+
+
+        if (!confirmation) {
+            return;
+        }
+
+
+        data = {
+
+            scores: {},
+
+            history: []
+
+        };
+
+
+        students.forEach(student => {
+
+            data.scores[student] = 0;
+
+        });
+
+
+        saveData();
+
+        renderStudents();
+
+        renderHistory();
+
+        updateChart();
+
+    }
+
+
+    /*
+     * ============================================
+     * CLOSE MODAL WHEN CLICKING OUTSIDE
+     * ============================================
+     */
+
+    window.addEventListener("click", function(event) {
+
+        const modal =
+            document.getElementById("creditModal");
+
+
+        if (event.target === modal) {
+
+            closeModal();
+
+        }
+
+    });
+
+
+    /*
+     * ============================================
+     * INITIALIZE WEBSITE
+     * ============================================
+     */
+
+    renderStudents();
+
+    renderHistory();
+
+    createChart();
+
+</script>
+
+</body>
+</html>
+```
