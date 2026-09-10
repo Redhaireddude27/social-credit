@@ -7,10 +7,11 @@
 
     <title>IS Social Credit | 信息系统社会信用</title>
 
-    <!-- Chart.js for the social credit graph -->
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
+
         * {
             box-sizing: border-box;
         }
@@ -18,193 +19,288 @@
         body {
             margin: 0;
             font-family: Arial, Helvetica, sans-serif;
-            background: #f4f6f8;
+            background: #f5f5f5;
             color: #222;
         }
 
-        /* HEADER */
+        /* =========================================
+           HEADER
+        ========================================= */
+
         header {
-            background: #111827;
+            height: 110px;
+            background: #c8102e;
             color: white;
-            text-align: center;
-            padding: 30px 20px;
+            display: flex;
+            align-items: center;
+            padding: 20px 35px;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 5px solid #f7d046;
+        }
+
+        header::before {
+            content: "★";
+            position: absolute;
+            left: 25px;
+            top: 10px;
+            font-size: 80px;
+            color: #f7d046;
+            opacity: 0.95;
+        }
+
+        .header-content {
+            margin-left: 110px;
         }
 
         header h1 {
             margin: 0;
-            font-size: 2.4rem;
+            font-size: 2.3rem;
         }
 
         header h2 {
-            margin: 8px 0 0;
-            font-size: 1.4rem;
+            margin: 4px 0 0;
+            font-size: 1.3rem;
             font-weight: normal;
-            color: #d1d5db;
+            color: #f7d046;
         }
 
-        header p {
-            margin: 15px auto 0;
-            max-width: 700px;
-            color: #9ca3af;
+        /* =========================================
+           PAGE LAYOUT
+        ========================================= */
+
+        .page-layout {
+            display: flex;
+            min-height: calc(100vh - 110px);
         }
 
-        /* MAIN */
-        main {
-            width: 90%;
-            max-width: 1200px;
-            margin: 30px auto;
+        /* =========================================
+           SIDEBAR
+        ========================================= */
+
+        .sidebar {
+            width: 300px;
+            min-width: 300px;
+            background: #8f0d20;
+            color: white;
+            padding: 20px 15px;
+            overflow-y: auto;
+            height: calc(100vh - 110px);
+            position: sticky;
+            top: 0;
         }
 
-        .section-title {
+        .sidebar-title {
+            text-align: center;
+            border-bottom: 2px solid #f7d046;
+            padding-bottom: 15px;
             margin-bottom: 15px;
         }
 
-        .section-title h2 {
-            margin-bottom: 5px;
+        .sidebar-title h2 {
+            margin: 0;
+            color: #f7d046;
+            font-size: 1.4rem;
         }
 
-        .section-title p {
-            color: #666;
-            margin-top: 0;
-        }
-
-        /* STUDENT GRID */
-        .student-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
+        .sidebar-title p {
+            margin: 5px 0 0;
+            font-size: 0.9rem;
         }
 
         .student-card {
-            background: white;
-            border-radius: 10px;
-            padding: 18px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            transition: transform 0.15s ease;
+            background: #b5122b;
+            border: 1px solid rgba(247, 208, 70, 0.4);
+            border-radius: 7px;
+            padding: 10px;
+            margin-bottom: 8px;
         }
 
-        .student-card:hover {
-            transform: translateY(-2px);
+        .student-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 7px;
         }
 
         .student-name {
             font-weight: bold;
-            font-size: 1.1rem;
-            margin-bottom: 10px;
+            font-size: 0.95rem;
         }
 
-        .score {
-            font-size: 1.8rem;
+        .student-name-chinese {
+            font-size: 0.75rem;
+            color: #f7d046;
+            display: block;
+            margin-top: 2px;
+        }
+
+        .student-score {
+            font-size: 1.15rem;
             font-weight: bold;
-            margin-bottom: 12px;
+            color: #f7d046;
         }
 
-        .score.positive {
-            color: #15803d;
-        }
-
-        .score.negative {
-            color: #dc2626;
-        }
-
-        .score.zero {
-            color: #555;
-        }
-
-        .button-row {
+        .sidebar-buttons {
             display: flex;
-            gap: 8px;
+            gap: 5px;
         }
 
-        button {
+        .sidebar-buttons button {
+            flex: 1;
             border: none;
-            border-radius: 6px;
-            padding: 9px 14px;
+            border-radius: 4px;
+            padding: 6px;
             cursor: pointer;
             font-weight: bold;
-            transition: opacity 0.15s;
-        }
-
-        button:hover {
-            opacity: 0.8;
+            color: white;
         }
 
         .add-button {
-            background: #16a34a;
-            color: white;
-            flex: 1;
+            background: #188038;
         }
 
         .subtract-button {
-            background: #dc2626;
-            color: white;
-            flex: 1;
+            background: #5f0715;
         }
 
-        /* GRAPH */
+        .sidebar-buttons button:hover {
+            opacity: 0.8;
+        }
+
+        /* =========================================
+           MAIN CONTENT
+        ========================================= */
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            min-width: 0;
+        }
+
+        .welcome-section {
+            margin-bottom: 25px;
+        }
+
+        .welcome-section h2 {
+            margin: 0;
+            color: #8f0d20;
+            font-size: 1.8rem;
+        }
+
+        .welcome-section p {
+            margin-top: 5px;
+            color: #666;
+        }
+
+        /* =========================================
+           GRAPH
+        ========================================= */
+
         .graph-section {
             background: white;
-            margin-top: 35px;
+            border-radius: 12px;
             padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+            border-top: 5px solid #c8102e;
+        }
+
+        .graph-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .graph-title h2 {
+            margin: 0;
+            color: #8f0d20;
+        }
+
+        .graph-title p {
+            margin: 3px 0 0;
+            color: #777;
         }
 
         .graph-container {
             position: relative;
-            height: 500px;
+            height: 600px;
         }
 
-        /* HISTORY */
+        /* =========================================
+           ACTIVITY HISTORY
+        ========================================= */
+
         .history-section {
             background: white;
-            margin-top: 35px;
+            margin-top: 25px;
             padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            border-top: 5px solid #f7d046;
+        }
+
+        .history-section h2 {
+            margin-top: 0;
+            color: #8f0d20;
         }
 
         .history-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
             border-bottom: 1px solid #eee;
             padding: 12px 0;
-            display: flex;
-            justify-content: space-between;
-            gap: 15px;
-        }
-
-        .history-item:last-child {
-            border-bottom: none;
-        }
-
-        .history-change {
-            font-weight: bold;
-        }
-
-        .history-change.add {
-            color: #15803d;
-        }
-
-        .history-change.subtract {
-            color: #dc2626;
-        }
-
-        .history-reason {
-            color: #555;
-            flex: 1;
         }
 
         .history-student {
             font-weight: bold;
-            min-width: 120px;
+            width: 130px;
+        }
+
+        .history-reason {
+            flex: 1;
+            color: #555;
+        }
+
+        .history-date {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .history-change {
+            font-size: 1.1rem;
+            font-weight: bold;
+            width: 60px;
+            text-align: right;
+        }
+
+        .history-change.add {
+            color: #188038;
+        }
+
+        .history-change.subtract {
+            color: #c8102e;
         }
 
         .clear-button {
-            background: #374151;
-            color: white;
             margin-top: 15px;
+            background: #8f0d20;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
         }
 
-        /* MODAL */
+        .clear-button:hover {
+            background: #c8102e;
+        }
+
+        /* =========================================
+           MODAL
+        ========================================= */
+
         .modal {
             display: none;
             position: fixed;
@@ -213,32 +309,49 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.55);
+            background: rgba(0,0,0,0.6);
             justify-content: center;
             align-items: center;
         }
 
         .modal-content {
-            background: white;
             width: 90%;
             max-width: 450px;
+            background: white;
             border-radius: 12px;
-            padding: 25px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
         }
 
-        .modal-content h2 {
-            margin-top: 0;
+        .modal-header {
+            background: #c8102e;
+            color: white;
+            padding: 20px;
+            border-bottom: 4px solid #f7d046;
         }
 
-        .modal-content label {
+        .modal-header h2 {
+            margin: 0;
+        }
+
+        .modal-header p {
+            margin: 4px 0 0;
+            color: #f7d046;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-body label {
             display: block;
             margin-top: 15px;
             margin-bottom: 6px;
             font-weight: bold;
         }
 
-        .modal-content select,
-        .modal-content input {
+        .modal-body select,
+        .modal-body input {
             width: 100%;
             padding: 11px;
             border: 1px solid #ccc;
@@ -253,184 +366,316 @@
         }
 
         .submit-button {
-            background: #2563eb;
-            color: white;
             flex: 1;
+            background: #188038;
+            color: white;
         }
 
         .cancel-button {
-            background: #d1d5db;
-            color: #111;
             flex: 1;
+            background: #ddd;
+            color: #222;
         }
 
-        /* RESPONSIVE */
-        @media (max-width: 600px) {
+        /* =========================================
+           MOBILE
+        ========================================= */
+
+        @media (max-width: 800px) {
+
+            header {
+                height: 90px;
+                padding: 15px;
+            }
+
+            header::before {
+                font-size: 55px;
+            }
+
+            .header-content {
+                margin-left: 75px;
+            }
+
             header h1 {
-                font-size: 1.8rem;
+                font-size: 1.6rem;
+            }
+
+            header h2 {
+                font-size: 1rem;
+            }
+
+            .page-layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                min-width: 0;
+                height: auto;
+                position: relative;
+                max-height: 400px;
+            }
+
+            .main-content {
+                padding: 15px;
             }
 
             .graph-container {
-                height: 350px;
+                height: 450px;
             }
 
             .history-item {
-                flex-direction: column;
-                gap: 4px;
+                flex-wrap: wrap;
+                gap: 8px;
             }
         }
+
     </style>
 </head>
 
+
 <body>
 
+<!-- =========================================
+     HEADER
+========================================= -->
+
 <header>
-    <h1>IS Social Credit</h1>
-    <h2>信息系统社会信用</h2>
-    <p>
-        Track the social credit of your IS classmates.
-        Everyone starts with 0 social credit.
-    </p>
+
+    <div class="header-content">
+
+        <h1>IS Social Credit</h1>
+
+        <h2>信息系统社会信用</h2>
+
+    </div>
+
 </header>
 
-<main>
 
-    <!-- STUDENTS -->
-    <section>
-        <div class="section-title">
+<div class="page-layout">
+
+
+    <!-- =========================================
+         SIDEBAR
+    ========================================= -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-title">
+
             <h2>Classmates</h2>
-            <p>Select a student to add or subtract social credit.</p>
+
+            <p>同学名单</p>
+
         </div>
 
-        <div id="studentGrid" class="student-grid"></div>
-    </section>
+        <div id="studentGrid"></div>
+
+    </aside>
 
 
-    <!-- GRAPH -->
-    <section class="graph-section">
-        <div class="section-title">
-            <h2>Social Credit Over Time</h2>
+    <!-- =========================================
+         MAIN CONTENT
+    ========================================= -->
+
+    <main class="main-content">
+
+
+        <div class="welcome-section">
+
+            <h2>Social Credit Dashboard</h2>
+
             <p>
-                Track how everyone's social credit changes throughout the semester.
+                Social Credit Dashboard · 社会信用积分面板
             </p>
+
         </div>
 
-        <div class="graph-container">
-            <canvas id="creditChart"></canvas>
-        </div>
-    </section>
+
+        <!-- GRAPH -->
+
+        <section class="graph-section">
+
+            <div class="graph-title">
+
+                <div>
+
+                    <h2>Social Credit Over Time</h2>
+
+                    <p>
+                        社会信用积分变化趋势
+                    </p>
+
+                </div>
+
+            </div>
 
 
-    <!-- HISTORY -->
-    <section class="history-section">
-        <div class="section-title">
-            <h2>Recent Activity</h2>
-            <p>Every social-credit adjustment is recorded here.</p>
-        </div>
+            <div class="graph-container">
 
-        <div id="historyList">
-            <p>No social-credit activity yet.</p>
-        </div>
+                <canvas id="creditChart"></canvas>
 
-        <button class="clear-button" onclick="clearAllData()">
-            Reset All Social Credit
-        </button>
-    </section>
+            </div>
 
-</main>
+        </section>
 
 
-<!-- MODAL -->
+        <!-- HISTORY -->
+
+        <section class="history-section">
+
+            <h2>
+                Recent Activity · 最近活动
+            </h2>
+
+            <div id="historyList">
+
+                <p>
+                    No activity yet · 暂无活动
+                </p>
+
+            </div>
+
+            <button
+                class="clear-button"
+                onclick="clearAllData()"
+            >
+                Reset All Social Credit · 重置所有积分
+            </button>
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+<!-- =========================================
+     MODAL
+========================================= -->
+
 <div id="creditModal" class="modal">
 
     <div class="modal-content">
 
-        <h2 id="modalTitle">Change Social Credit</h2>
 
-        <label for="changeType">Change</label>
+        <div class="modal-header">
 
-        <select id="changeType">
-            <option value="add">Add Social Credit</option>
-            <option value="subtract">Subtract Social Credit</option>
-        </select>
+            <h2 id="modalTitle">
+                Change Social Credit
+            </h2>
 
+            <p>
+                调整社会信用积分
+            </p>
 
-        <label for="pointAmount">Points</label>
-
-        <input
-            type="number"
-            id="pointAmount"
-            min="1"
-            value="20"
-        >
+        </div>
 
 
-        <label for="reason">Reason</label>
-
-        <select id="reason">
-
-            <option value="Made people laugh">
-                Made people laugh
-            </option>
-
-            <option value="Made a great comment">
-                Made a great comment
-            </option>
-
-            <option value="Helped a classmate">
-                Helped a classmate
-            </option>
-
-            <option value="Answered a difficult question">
-                Answered a difficult question
-            </option>
-
-            <option value="Made a cringe comment">
-                Made a cringe comment
-            </option>
-
-            <option value="Fell asleep in class">
-                Fell asleep in class
-            </option>
-
-            <option value="Was on their phone">
-               Was on their phone
-            </option>
-
-            <option value="Was late to class">
-                Was late to class
-            </option>
-
-            <option value="Custom">
-                Custom reason
-            </option>
-
-        </select>
+        <div class="modal-body">
 
 
-        <input
-            type="text"
-            id="customReason"
-            placeholder="Enter custom reason"
-            style="display:none; margin-top:10px;"
-        >
+            <label for="changeType">
+                Change · 积分变化
+            </label>
+
+            <select id="changeType">
+
+                <option value="add">
+                    Add Social Credit · 增加积分
+                </option>
+
+                <option value="subtract">
+                    Subtract Social Credit · 扣除积分
+                </option>
+
+            </select>
 
 
-        <div class="modal-buttons">
+            <label for="pointAmount">
+                Points · 积分数量
+            </label>
 
-            <button
-                class="cancel-button"
-                onclick="closeModal()"
+            <input
+                type="number"
+                id="pointAmount"
+                min="1"
+                value="20"
             >
-                Cancel
-            </button>
 
-            <button
-                class="submit-button"
-                onclick="submitCreditChange()"
+
+            <label for="reason">
+                Reason · 原因
+            </label>
+
+            <select id="reason">
+
+                <option value="Made people laugh">
+                    Made people laugh · 让大家笑了
+                </option>
+
+                <option value="Made a great comment">
+                    Made a great comment · 发表精彩评论
+                </option>
+
+                <option value="Helped a classmate">
+                    Helped a classmate · 帮助同学
+                </option>
+
+                <option value="Answered a difficult question">
+                    Answered a difficult question · 回答了难题
+                </option>
+
+                <option value="Made a cringe comment">
+                    Made a cringe comment · 发表尴尬评论
+                </option>
+
+                <option value="Fell asleep in class">
+                    Fell asleep in class · 上课睡觉
+                </option>
+
+                <option value="Was on their phone">
+                    Was on their phone · 上课玩手机
+                </option>
+
+                <option value="Was late to class">
+                    Was late to class · 上课迟到
+                </option>
+
+                <option value="Custom">
+                    Custom reason · 自定义原因
+                </option>
+
+            </select>
+
+
+            <input
+                type="text"
+                id="customReason"
+                placeholder="Custom reason · 自定义原因"
+                style="display:none; margin-top:10px;"
             >
-                Apply Change
-            </button>
+
+
+            <div class="modal-buttons">
+
+                <button
+                    class="cancel-button"
+                    onclick="closeModal()"
+                >
+                    Cancel · 取消
+                </button>
+
+                <button
+                    class="submit-button"
+                    onclick="submitCreditChange()"
+                >
+                    Apply Change · 确认
+                </button>
+
+            </div>
 
         </div>
 
@@ -441,13 +686,12 @@
 
 <script>
 
-    /*
-     * ============================================
-     * STUDENT DATA
-     * ============================================
-     */
+    /* =========================================
+       STUDENTS
+    ========================================= */
 
     const students = [
+
         "Student 01",
         "Student 02",
         "Student 03",
@@ -474,21 +718,58 @@
         "Student 24",
         "Student 25",
         "Student 26"
+
     ];
 
 
     /*
-     * ============================================
-     * LOAD DATA
-     * ============================================
-     */
+       Placeholder Chinese names.
 
-    let data = JSON.parse(
-        localStorage.getItem("socialCreditData")
-    );
+       Replace these later if you want.
+    */
+
+    const chineseNames = [
+
+        "学生 01",
+        "学生 02",
+        "学生 03",
+        "学生 04",
+        "学生 05",
+        "学生 06",
+        "学生 07",
+        "学生 08",
+        "学生 09",
+        "学生 10",
+        "学生 11",
+        "学生 12",
+        "学生 13",
+        "学生 14",
+        "学生 15",
+        "学生 16",
+        "学生 17",
+        "学生 18",
+        "学生 19",
+        "学生 20",
+        "学生 21",
+        "学生 22",
+        "学生 23",
+        "学生 24",
+        "学生 25",
+        "学生 26"
+
+    ];
 
 
-    // If no saved data exists, create it
+    /* =========================================
+       DATA
+    ========================================= */
+
+    let data =
+        JSON.parse(
+            localStorage.getItem("socialCreditData")
+        );
+
+
     if (!data) {
 
         data = {
@@ -499,19 +780,18 @@
 
         };
 
+
         students.forEach(student => {
+
             data.scores[student] = 0;
+
         });
 
+
         saveData();
+
     }
 
-
-    /*
-     * ============================================
-     * SAVE DATA
-     * ============================================
-     */
 
     function saveData() {
 
@@ -523,11 +803,9 @@
     }
 
 
-    /*
-     * ============================================
-     * DISPLAY STUDENTS
-     * ============================================
-     */
+    /* =========================================
+       SIDEBAR
+    ========================================= */
 
     function renderStudents() {
 
@@ -537,51 +815,56 @@
         grid.innerHTML = "";
 
 
-        students.forEach(student => {
+        students.forEach((student, index) => {
 
-            const score = data.scores[student];
-
-            let scoreClass = "zero";
-
-            if (score > 0) {
-                scoreClass = "positive";
-            }
-
-            if (score < 0) {
-                scoreClass = "negative";
-            }
+            const score =
+                data.scores[student];
 
 
             const card =
                 document.createElement("div");
 
-            card.className = "student-card";
+            card.className =
+                "student-card";
 
 
             card.innerHTML = `
 
-                <div class="student-name">
-                    ${student}
+                <div class="student-info">
+
+                    <div>
+
+                        <div class="student-name">
+                            ${student}
+                        </div>
+
+                        <span class="student-name-chinese">
+                            ${chineseNames[index]}
+                        </span>
+
+                    </div>
+
+                    <div class="student-score">
+                        ${score}
+                    </div>
+
                 </div>
 
-                <div class="score ${scoreClass}">
-                    ${score}
-                </div>
 
-                <div class="button-row">
+                <div class="sidebar-buttons">
 
                     <button
                         class="add-button"
                         onclick="openModal('${student}', 'add')"
                     >
-                        + Add
+                        + 增加
                     </button>
 
                     <button
                         class="subtract-button"
                         onclick="openModal('${student}', 'subtract')"
                     >
-                        − Subtract
+                        − 扣除
                     </button>
 
                 </div>
@@ -596,11 +879,9 @@
     }
 
 
-    /*
-     * ============================================
-     * MODAL
-     * ============================================
-     */
+    /* =========================================
+       MODAL
+    ========================================= */
 
     let selectedStudent = null;
 
@@ -609,18 +890,26 @@
 
         selectedStudent = student;
 
-        document.getElementById("changeType").value = type;
+
+        document.getElementById("changeType").value =
+            type;
+
 
         document.getElementById("modalTitle").textContent =
-            "Change " + student + "'s Social Credit";
+            student + " · Change Social Credit";
 
-        document.getElementById("pointAmount").value = 20;
+
+        document.getElementById("pointAmount").value =
+            20;
+
 
         document.getElementById("reason").value =
             "Made people laugh";
 
+
         document.getElementById("customReason").style.display =
             "none";
+
 
         document.getElementById("creditModal").style.display =
             "flex";
@@ -638,11 +927,9 @@
     }
 
 
-    /*
-     * ============================================
-     * CUSTOM REASON
-     * ============================================
-     */
+    /* =========================================
+       CUSTOM REASON
+    ========================================= */
 
     document.getElementById("reason").addEventListener(
         "change",
@@ -651,13 +938,16 @@
             const custom =
                 document.getElementById("customReason");
 
+
             if (this.value === "Custom") {
 
-                custom.style.display = "block";
+                custom.style.display =
+                    "block";
 
             } else {
 
-                custom.style.display = "none";
+                custom.style.display =
+                    "none";
 
             }
 
@@ -665,11 +955,9 @@
     );
 
 
-    /*
-     * ============================================
-     * APPLY CHANGE
-     * ============================================
-     */
+    /* =========================================
+       CHANGE SOCIAL CREDIT
+    ========================================= */
 
     function submitCreditChange() {
 
@@ -690,7 +978,9 @@
 
         if (!points || points <= 0) {
 
-            alert("Please enter a positive number of points.");
+            alert(
+                "Please enter a positive number of points."
+            );
 
             return;
 
@@ -704,12 +994,16 @@
         if (reason === "Custom") {
 
             reason =
-                document.getElementById("customReason").value.trim();
+                document.getElementById("customReason")
+                    .value
+                    .trim();
 
 
             if (!reason) {
 
-                alert("Please enter a reason.");
+                alert(
+                    "Please enter a reason."
+                );
 
                 return;
 
@@ -728,11 +1022,13 @@
         }
 
 
-        // Update student's score
+        /* Update score */
+
         data.scores[selectedStudent] += change;
 
 
-        // Record transaction
+        /* Record transaction */
+
         data.history.push({
 
             student: selectedStudent,
@@ -741,12 +1037,15 @@
 
             reason: reason,
 
+            date: getDateKey(),
+
             time: new Date().toLocaleString()
 
         });
 
 
         saveData();
+
 
         renderStudents();
 
@@ -759,11 +1058,26 @@
     }
 
 
-    /*
-     * ============================================
-     * HISTORY
-     * ============================================
-     */
+    /* =========================================
+       DAILY DATE
+    ========================================= */
+
+    function getDateKey() {
+
+        const date = new Date();
+
+        return date.getFullYear() +
+            "-" +
+            String(date.getMonth() + 1).padStart(2, "0") +
+            "-" +
+            String(date.getDate()).padStart(2, "0");
+
+    }
+
+
+    /* =========================================
+       HISTORY
+    ========================================= */
 
     function renderHistory() {
 
@@ -774,7 +1088,7 @@
         if (data.history.length === 0) {
 
             historyList.innerHTML =
-                "<p>No social-credit activity yet.</p>";
+                "<p>No activity yet · 暂无活动</p>";
 
             return;
 
@@ -784,7 +1098,6 @@
         historyList.innerHTML = "";
 
 
-        // Show newest activity first
         const history =
             [...data.history].reverse();
 
@@ -794,7 +1107,9 @@
             const div =
                 document.createElement("div");
 
-            div.className = "history-item";
+
+            div.className =
+                "history-item";
 
 
             const changeClass =
@@ -816,9 +1131,13 @@
                 </div>
 
                 <div class="history-reason">
+
                     ${item.reason}
-                    <br>
-                    <small>${item.time}</small>
+
+                    <div class="history-date">
+                        ${item.time}
+                    </div>
+
                 </div>
 
                 <div class="history-change ${changeClass}">
@@ -835,158 +1154,60 @@
     }
 
 
-    /*
-     * ============================================
-     * CHART
-     * ============================================
-     */
+    /* =========================================
+       DAILY GRAPH
+    ========================================= */
 
     let creditChart;
 
 
-    function createChart() {
+    function getDailyDates() {
 
-        const ctx =
-            document.getElementById("creditChart")
-                .getContext("2d");
+        const dates = [];
 
 
-        const datasets =
-            students.map((student, index) => {
+        data.history.forEach(item => {
 
-                return {
+            if (!dates.includes(item.date)) {
 
-                    label: student,
-
-                    data: getStudentHistory(student),
-
-                    borderWidth: 2,
-
-                    tension: 0.2,
-
-                    pointRadius: 2,
-
-                    fill: false
-
-                };
-
-            });
-
-
-        creditChart = new Chart(ctx, {
-
-            type: "line",
-
-            data: {
-
-                labels: getChartLabels(),
-
-                datasets: datasets
-
-            },
-
-            options: {
-
-                responsive: true,
-
-                maintainAspectRatio: false,
-
-                interaction: {
-
-                    mode: "index",
-
-                    intersect: false
-
-                },
-
-                plugins: {
-
-                    legend: {
-
-                        position: "bottom"
-
-                    },
-
-                    tooltip: {
-
-                        mode: "index",
-
-                        intersect: false
-
-                    }
-
-                },
-
-                scales: {
-
-                    y: {
-
-                        title: {
-
-                            display: true,
-
-                            text: "Social Credit"
-
-                        }
-
-                    },
-
-                    x: {
-
-                        title: {
-
-                            display: true,
-
-                            text: "Activity"
-
-                        }
-
-                    }
-
-                }
+                dates.push(item.date);
 
             }
 
         });
 
-    }
 
-
-    /*
-     * Get labels for chart
-     */
-
-    function getChartLabels() {
-
-        const labels = ["Start"];
-
-        for (let i = 1; i <= data.history.length; i++) {
-            labels.push("Change " + i);
-        }
-
-        return labels;
+        return dates;
 
     }
 
 
-    /*
-     * Get student's score after every change
-     */
+    function getDailyHistory(student) {
 
-    function getStudentHistory(student) {
+        const dates =
+            getDailyDates();
+
 
         let score = 0;
 
-        const values = [0];
+        const values = [];
 
 
-        data.history.forEach(item => {
+        dates.forEach(date => {
 
-            if (item.student === student) {
+            data.history.forEach(item => {
 
-                score += item.change;
+                if (
+                    item.student === student &&
+                    item.date === date
+                ) {
 
-            }
+                    score += item.change;
+
+                }
+
+            });
+
 
             values.push(score);
 
@@ -998,9 +1219,120 @@
     }
 
 
-    /*
-     * Update chart after every transaction
-     */
+    function createChart() {
+
+        const ctx =
+            document
+                .getElementById("creditChart")
+                .getContext("2d");
+
+
+        const datasets =
+            students.map(student => {
+
+                return {
+
+                    label: student,
+
+                    data:
+                        getDailyHistory(student),
+
+                    borderWidth: 2,
+
+                    tension: 0.25,
+
+                    pointRadius: 3,
+
+                    fill: false
+
+                };
+
+            });
+
+
+        creditChart =
+            new Chart(ctx, {
+
+                type: "line",
+
+                data: {
+
+                    labels:
+                        getDailyDates(),
+
+                    datasets:
+                        datasets
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    interaction: {
+
+                        mode: "index",
+
+                        intersect: false
+
+                    },
+
+                    plugins: {
+
+                        legend: {
+
+                            position: "bottom"
+
+                        },
+
+                        tooltip: {
+
+                            mode: "index",
+
+                            intersect: false
+
+                        }
+
+                    },
+
+                    scales: {
+
+                        y: {
+
+                            title: {
+
+                                display: true,
+
+                                text:
+                                    "Social Credit · 社会信用积分"
+
+                            }
+
+                        },
+
+                        x: {
+
+                            title: {
+
+                                display: true,
+
+                                text:
+                                    "Date · 日期"
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            });
+
+    }
+
 
     function updateChart() {
 
@@ -1010,7 +1342,7 @@
 
 
         creditChart.data.labels =
-            getChartLabels();
+            getDailyDates();
 
 
         creditChart.data.datasets =
@@ -1018,13 +1350,14 @@
 
                 label: student,
 
-                data: getStudentHistory(student),
+                data:
+                    getDailyHistory(student),
 
                 borderWidth: 2,
 
-                tension: 0.2,
+                tension: 0.25,
 
-                pointRadius: 2,
+                pointRadius: 3,
 
                 fill: false
 
@@ -1036,17 +1369,15 @@
     }
 
 
-    /*
-     * ============================================
-     * RESET EVERYTHING
-     * ============================================
-     */
+    /* =========================================
+       RESET
+    ========================================= */
 
     function clearAllData() {
 
         const confirmation =
             confirm(
-                "Are you sure you want to reset everyone's social credit and delete all history?"
+                "Are you sure you want to reset everyone's social credit?\n\n确定要重置所有人的社会信用积分吗？"
             );
 
 
@@ -1082,32 +1413,31 @@
     }
 
 
-    /*
-     * ============================================
-     * CLOSE MODAL WHEN CLICKING OUTSIDE
-     * ============================================
-     */
+    /* =========================================
+       CLOSE MODAL OUTSIDE CLICK
+    ========================================= */
 
-    window.addEventListener("click", function(event) {
+    window.addEventListener(
+        "click",
+        function(event) {
 
-        const modal =
-            document.getElementById("creditModal");
+            const modal =
+                document.getElementById("creditModal");
 
 
-        if (event.target === modal) {
+            if (event.target === modal) {
 
-            closeModal();
+                closeModal();
+
+            }
 
         }
+    );
 
-    });
 
-
-    /*
-     * ============================================
-     * INITIALIZE WEBSITE
-     * ============================================
-     */
+    /* =========================================
+       START WEBSITE
+    ========================================= */
 
     renderStudents();
 
